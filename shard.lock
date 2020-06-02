@@ -1,0 +1,26 @@
+version: 1.0
+shards:
+  cmds:
+    github: maiha/cmds.cr
+    version: 0.3.7
+
+  pretty:
+    github: maiha/pretty.cr
+    version: 0.9.10
+
+  shard:
+    github: maiha/shard.cr
+    version: 0.3.1
+
+  shell:
+    github: maiha/shell.cr
+    version: 0.4.2
+
+  try:
+    github: maiha/try.cr
+    version: 0.3.0
+
+  var:
+    github: maiha/var.cr
+    version: 1.2.0
+

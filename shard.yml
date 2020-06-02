@@ -1,0 +1,27 @@
+name: domo-cli
+version: 0.3.0
+
+authors:
+  - maiha <maiha@wota.jp>
+
+targets:
+  domo-cli:
+    main: src/domo-cli.cr
+  domo-cli-dev:
+    main: src/domo-cli.cr
+
+dependencies:
+  var:
+    github: maiha/var.cr
+  try:
+    github: maiha/try.cr
+  pretty:
+    github: maiha/pretty.cr
+  cmds:
+    github: maiha/cmds.cr
+  shell:
+    github: maiha/shell.cr
+  shard:
+    github: maiha/shard.cr
+
+license: MIT
