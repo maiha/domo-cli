@@ -3,7 +3,7 @@ SHELL=/bin/bash
 export GNUMAKEFLAGS=--no-print-directory
 .SHELLFLAGS = -o pipefail -c
 
-all: domo-cli-dev
+all: compile
 
 ######################################################################
 ### compiling
@@ -37,11 +37,12 @@ console:
 .PHONY: ci
 ci: compile test
 
-.PHONY: test
-test: bin/domo-cli-dev
+test: test/unit
+
+test/%: bin/domo-cli-dev
 	@rm -rf tmp && mkdir tmp
-	@cd tmp && ln -s ../$< domo-cli
-	@make -f ../tests/Makefile test -C tmp
+	@cd tmp && ln -s ../$< domo-cli && ln -s ../tests/Makefile
+	@make $* -C tmp
 
 ######################################################################
 ### versioning

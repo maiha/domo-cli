@@ -1,9 +1,9 @@
-# domo-cli
+# domo-cli [![Build Status](https://travis-ci.org/maiha/domo-cli.svg?branch=master)](https://travis-ci.org/maiha/domo-cli)
 
 The Domo Command Line Interface built as a static x86_64 binary.
 
 ```console
-$ domo-cli import-dataset <dataset_id> --client-id <id> --client-secret <secret> -f <data.csv>
+$ domo-cli import-dataset <DATASET_ID> -f data.csv
 ```
 
 ## Installation
@@ -55,24 +55,35 @@ And it creates following files in the output directory.
 * the authentication tokens
 * history of executed shell commands
 * intermediate files needed to execute the API
-The directory can be specified with the "-C <DIR>" option, which defaults to `.domo`.
+
+The directory can be specified with the "-O <DIR>" option, which defaults to `.domo`.
 
 ### Dryrun
 
 domo-cli is a thin wrapper for cURL. It shows a cURL shell command by "-n" arg.
 
 ```console
-$ domo-cli dataset get <dataset_id> -n
+$ domo-cli dataset get <DATASET_ID> -n
 ```
 
 ## Roadmap
 
+* token
+  * [x] authorize
+  * [x] show
+* dataset
+  * [x] create
+  * [ ] update
+  * [ ] import
+  * [ ] delete
+  * [ ] get
+
 ## Development
 
-* [Crystal](http://crystal-lang.org/).
+* using [Crystal](http://crystal-lang.org/) on docker
 
 ```console
-$ make compile
+$ make
 $ make test
 ```
 

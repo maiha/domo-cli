@@ -1,5 +1,6 @@
 /bin
 /lib
+/local
 /tmp
 /.crystal
 /.shards
