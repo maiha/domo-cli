@@ -42,8 +42,12 @@ Althoug domo-cli will automatically update OAuth tokens when it is expired,
 you can manually update it by `token authorize`.
 
 ```console
-$ domo-cli token authorize --client-id=<CLIENT_ID> --client-secret=<CLIENT_SECRET>
+$ domo-cli token authorize --client-id=5e847... --client-secret=52ccf...
+
 $ domo-cli token show
+fetched at : 2020-06-03 02:09:54 +09:00
+expired at : 2020-06-03 03:09:53 +09:00
+token      : eyJhbGciOiJSUzI1NiIs...
 ```
 
 The token file is stored in `.domo` directory in default. See the **Outdir** for details.
@@ -74,7 +78,7 @@ $ domo-cli dataset get <DATASET_ID> -n
 * dataset
   * [x] create
   * [ ] update
-  * [ ] import
+  * [x] import
   * [ ] delete
   * [ ] get
 

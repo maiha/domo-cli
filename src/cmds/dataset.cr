@@ -16,6 +16,23 @@ Cmds.command "dataset" do
     end
   end
 
+  desc "import", "123456 -f data.csv # PUT https://api.domo.com/v1/datasets/{DATASET_ID}/data"
+  task "import", "<DATASET_ID> -f <DATA_CSV>" do
+    api  = task_name
+    id   = arg1?.to_s.strip
+    file = option.file.to_s.strip
+
+    abort "arg1: Needs <DATASET_ID>" if id.empty?
+    abort "Needs -f <DATA_CSV>" if file.empty?
+
+    valid_token? || update_token!
+    curl "-X PUT -H 'Content-Type: text/csv' --data-binary @#{file} https://api.domo.com/v1/datasets/#{id}/data", api: api
+    
+    if !option.dryrun
+      check_import_dataset!(api: api)
+    end
+  end
+  
   private def check_create_dataset!(api, name)
     out = option.path("#{api}.out")
     created_name = Shell::Seq.run!("jq -r .name #{out}").stdout.chomp
@@ -44,4 +61,19 @@ Cmds.command "dataset" do
       puts "OK: #{created_id.inspect} (#{created_name})"
     end
   end
+
+  private def check_import_dataset!(api)
+    header = option.read("#{api}.header")
+
+    case header
+    when /\AHTTP[^ ]*? 204/
+      puts "OK"
+    else
+      out = option.read("#{api}.out")
+      err = option.read("#{api}.err")
+      log = (out + err).gsub(/\n\n+/m, "\n")
+      abort log
+    end
+  end
+
 end

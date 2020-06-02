@@ -18,9 +18,9 @@ it "(no files) # => ERROR"
   run  grep 'The token file does not exist' run.err.0
 
 ######################################################################
-### domo-cli authorize (test by dryrun)
+### domo-cli token authorize (test by dryrun)
 
-describe "domo-cli authorize"
+describe "domo-cli token authorize"
 it "(no env: DOMO_CLIENT_SECRET) # => ERROR"
   export DOMO_CLIENT_ID=foo
   unset DOMO_CLIENT_SECRET
