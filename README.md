@@ -80,6 +80,7 @@ $ domo-cli dataset get <DATASET_ID> -n
   * [ ] update
   * [x] import
   * [ ] delete
+  * [x] list
   * [ ] get
 
 ## Development

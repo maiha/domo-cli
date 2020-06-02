@@ -8,7 +8,7 @@ for helper in $(dirname $0)/helpers/*; do source $helper; done
 
 describe "domo-cli dataset create -f meta.json"
 it "POST meta.json to https://api.domo.com/v1/datasets with bearer token"
-  rm -rf .domo && mkdir .domo
+  clean_outdir
   create_token "abc"
   create_meta_json
   run  ./domo-cli dataset create -f meta.json -l log -v -n
@@ -42,7 +42,7 @@ it "(no access_token, but ARGs given) # => first authorize, then access"
 
 describe "domo-cli dataset import <DATASET_ID> -f <DATA_CSV>"
 it "PUT data.csv to https://api.domo.com/v1/datasets with bearer token"
-  rm -rf .domo && mkdir .domo
+  clean_outdir
   create_token "abc"
   create_meta_json
   run  ./domo-cli dataset import 123456 -f data.csv -l log -v -n
@@ -74,3 +74,17 @@ it "(no access_token, but ARGs given) # => first authorize, then access"
   run  grep " --data-binary @data.csv" cmd
   run  grep "Authorization: bearer" cmd
   run  grep "https://api.domo.com/v1/datasets/123456/data " cmd
+
+######################################################################
+### domo-cli dataset list (test by dryrun)
+
+describe "domo-cli dataset list -f <DATA_CSV>"
+it "GET https://api.domo.com/v1/datasets"
+  clean_outdir
+  create_token "abc"
+  create_meta_json
+  run  ./domo-cli dataset list -l log -v -n
+  cp run.out cmd
+  # access with bearer token
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets " cmd

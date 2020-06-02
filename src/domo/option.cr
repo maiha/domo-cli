@@ -4,13 +4,13 @@ class Domo::Option
   var chdir   : String
   var outdir  : String = ".domo"
   var file    : String
+  var output  : Output = Output::TEXT
   var dryrun  = false
   var verbose = false
 
   var client_id     : String = ENV["DOMO_CLIENT_ID"]?
   var client_secret : String = ENV["DOMO_CLIENT_SECRET"]?
-
-  var token_margin : Time::Span = 60.seconds
+  var token_margin  : Time::Span = 60.seconds
   
   var logger_path  : String
   var logger_level : String = "INFO"

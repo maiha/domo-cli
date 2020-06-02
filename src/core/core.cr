@@ -47,6 +47,7 @@ module Core
       parser.on("-m", "--token-margin SEC", "Margin to expired at (default: 60)") {|v| option.token_margin = v.to_i.seconds }
       parser.on("-O", "--outdir DIR", "Write files into the DIR") {|v| option.outdir = v.sub("/+$/","") }
       parser.on("-C", "--chdir DIR", "Change to DIR before executing") {|v| option.chdir = v }
+      parser.on("-j", "--json", "JSON output") { option.output = :json }
       parser.on("-f", "--file FILE", "Filename to upload") {|v| option.file = v }
       parser.on("-l", "--log FILE", "Logging file name (default: STDOUT)") {|v| option.logger_path = v }
       parser.on("-n", "--dryrun", "Dryrun mode") { option.dryrun = true }

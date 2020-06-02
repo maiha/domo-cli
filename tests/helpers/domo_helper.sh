@@ -1,5 +1,9 @@
 DOMO_CLI=./domo-cli
 
+function clean_outdir() {
+  rm -rf .domo && mkdir .domo
+}
+
 function create_token() {
   local v=$1
   mkdir -p .domo

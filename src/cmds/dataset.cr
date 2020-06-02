@@ -32,7 +32,18 @@ Cmds.command "dataset" do
       check_import_dataset!(api: api)
     end
   end
-  
+
+  task "list" do
+    api = task_name
+
+    valid_token? || update_token!
+    curl "https://api.domo.com/v1/datasets", api: api
+    
+    if !option.dryrun
+      check_list_dataset!(api: api)
+    end
+  end
+
   private def check_create_dataset!(api, name)
     out = option.path("#{api}.out")
     created_name = Shell::Seq.run!("jq -r .name #{out}").stdout.chomp
@@ -68,6 +79,24 @@ Cmds.command "dataset" do
     case header
     when /\AHTTP[^ ]*? 204/
       puts "OK"
+    else
+      out = option.read("#{api}.out")
+      err = option.read("#{api}.err")
+      log = (out + err).gsub(/\n\n+/m, "\n")
+      abort log
+    end
+  end
+
+  private def check_list_dataset!(api)
+    header = option.read("#{api}.header")
+
+    case header
+    when /\AHTTP[^ ]*? 200/
+      if option.output.json?
+        system("cat '%s'" % option.path("#{api}.out"))
+      else        
+        system("jq -r -c '.[] |[.id,.name] |@tsv' '%s'" % option.path("#{api}.out"))
+      end
     else
       out = option.read("#{api}.out")
       err = option.read("#{api}.err")
