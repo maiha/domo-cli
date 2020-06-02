@@ -164,3 +164,35 @@ it "GET https://api.domo.com/v1/datasets"
   # access with bearer token
   run  grep "Authorization: bearer" cmd
   run  grep "https://api.domo.com/v1/datasets " cmd
+
+######################################################################
+### domo-cli dataset get (test by dryrun)
+
+describe "domo-cli dataset get <DATASET_ID>"
+it "GET https://api.domo.com/v1/datasets/<DATASET_ID> with bearer token"
+  clean_outdir
+  create_token "abc"
+  run  ./domo-cli dataset get 123456 -n
+  cp run.out cmd
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd
+
+it "(no DATASET_ID) # => ERROR"
+  expect_error  ./domo-cli dataset get "" -l log -v -n
+  run  grep "DATASET_ID" run.err.0
+
+it "(no access_token) # => ERROR"
+  echo "{}" > .domo/token.out
+  expect_error  ./domo-cli dataset get 123456 -l log -v -n
+  run  grep "DOMO_CLIENT_ID" run.err.0
+
+it "(no access_token, but ARGs given) # => first authorize, then access"
+  echo "{}" > .domo/token.out
+  run  ./domo-cli dataset get 123456 --client-id foo --client-secret bar -l log -v -n
+  cp run.out cmd
+  # authorize
+  run  grep " -u 'foo:bar'" cmd
+  run  grep "https://api.domo.com/oauth/token" cmd
+  # access with bearer token
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd

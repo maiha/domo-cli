@@ -67,6 +67,21 @@ Cmds.command "dataset" do
     end
   end
 
+  desc "get", "123456 # GET https://api.domo.com/v1/datasets/{DATASET_ID}"
+  task "get", "<DATASET_ID>" do
+    api  = task_name
+    id   = arg1?.to_s.strip
+
+    abort "arg1: Needs <DATASET_ID>" if id.empty?
+
+    valid_token? || update_token!
+    curl "https://api.domo.com/v1/datasets/#{id}", api: api
+
+    if !option.dryrun
+      check_get_dataset!(api: api)
+    end
+  end
+
   task "list" do
     api = task_name
 
@@ -77,7 +92,7 @@ Cmds.command "dataset" do
       check_list_dataset!(api: api)
     end
   end
-
+  
   private def check_create_dataset!(api, name)
     out = option.path("#{api}.out")
     created_name = Shell::Seq.run!("jq -r .name #{out}").stdout.chomp
@@ -158,13 +173,32 @@ Cmds.command "dataset" do
     end
   end
 
+  private def check_get_dataset!(api)
+    header = option.read("#{api}.header")
+
+    case header
+    when /\AHTTP[^ ]*? 200/
+      if option.output.json?
+        system("jq . '%s'" % option.path("#{api}.out"))
+      else        
+        system("jq -r -c '[.id,.name] |@tsv' '%s'" % option.path("#{api}.out"))
+        system("jq -r -c '.schema.columns[]|[.name,.type]|@tsv' '%s'" % option.path("#{api}.out"))
+      end
+    else
+      out = option.read("#{api}.out")
+      err = option.read("#{api}.err")
+      log = (out + err).gsub(/\n\n+/m, "\n")
+      abort log
+    end
+  end
+
   private def check_list_dataset!(api)
     header = option.read("#{api}.header")
 
     case header
     when /\AHTTP[^ ]*? 200/
       if option.output.json?
-        system("cat '%s'" % option.path("#{api}.out"))
+        system("jq . '%s'" % option.path("#{api}.out"))
       else        
         system("jq -r -c '.[] |[.id,.name] |@tsv' '%s'" % option.path("#{api}.out"))
       end

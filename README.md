@@ -81,7 +81,7 @@ $ domo-cli dataset get <DATASET_ID> -n
   * [x] import
   * [x] delete
   * [x] list
-  * [ ] get
+  * [x] get
 
 ## Development
 
