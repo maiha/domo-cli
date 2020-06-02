@@ -3,7 +3,7 @@
 The Domo Command Line Interface built as a static x86_64 binary.
 
 ```console
-$ domo-cli import-dataset <DATASET_ID> -f data.csv
+$ domo-cli dataset import <DATASET_ID> -f data.csv
 ```
 
 ## Installation
@@ -28,12 +28,17 @@ The following usages assume that credentials have been granted in one of the abo
 
 domo-cli is itself built as a RESTful design and executed with **RESOURCE** and **ACTION** as arguments.
 
-### Dataset resource
+### Dataset
 
-* Available actions : **create**, **update**, **import**, **get**, **delete**
+* Available actions : **list**, **create**, **update**, **import**, **get**, **delete**
 
 ```console
-$ domo-cli dataset import -f data.csv
+$ domo-cli dataset list
+$ domo-cli dataset create -f meta.json
+$ domo-cli dataset update -f meta.json
+$ domo-cli dataset import <DATASET_ID> -f data.csv
+$ domo-cli dataset get    <DATASET_ID>
+$ domo-cli dataset delete <DATASET_ID>
 ```
 
 ### Token

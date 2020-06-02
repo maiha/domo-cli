@@ -26,6 +26,7 @@ domo-cli-dev: build
 .PHONY: domo-cli
 domo-cli: BUILD_TARGET=--release domo-cli
 domo-cli: build
+	@md5sum bin/$@
 
 .PHONY: console
 console:
@@ -58,7 +59,6 @@ version:
 	  echo "  make version VERSION=$(GUESSED_VERSION)";\
 	else \
 	  sed -i -e 's/^version: .*/version: $(VERSION)/' shard.yml ;\
-	  sed -i -e 's/^    version: [0-9]\+\.[0-9]\+\.[0-9]\+/    version: $(VERSION)/' README.cr.md ;\
 	  echo git commit -a -m "'$(COMMIT_MESSAGE)'" ;\
 	  git commit -a -m 'version: $(VERSION)' ;\
 	  git tag "v$(VERSION)" ;\
