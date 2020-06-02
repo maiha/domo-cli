@@ -77,7 +77,7 @@ $ domo-cli dataset get <DATASET_ID> -n
   * [x] show
 * dataset
   * [x] create
-  * [ ] update
+  * [x] update
   * [x] import
   * [ ] delete
   * [x] list

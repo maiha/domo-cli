@@ -50,6 +50,7 @@ it "PUT data.csv to https://api.domo.com/v1/datasets with bearer token"
   # access with bearer token
   run  grep " -X PUT" cmd
   run  grep " --data-binary @data.csv" cmd
+  run  grep "Content-Type: text/csv" cmd
   run  grep "Authorization: bearer" cmd
   run  grep "https://api.domo.com/v1/datasets/123456/data " cmd
 
@@ -72,8 +73,49 @@ it "(no access_token, but ARGs given) # => first authorize, then access"
   # access with bearer token
   run  grep " -X PUT" cmd
   run  grep " --data-binary @data.csv" cmd
+  run  grep "Content-Type: text/csv" cmd
   run  grep "Authorization: bearer" cmd
   run  grep "https://api.domo.com/v1/datasets/123456/data " cmd
+
+######################################################################
+### domo-cli dataset update (test by dryrun)
+
+describe "domo-cli dataset update <DATASET_ID> -f <META_JSON>"
+it "PUT meta.json to https://api.domo.com/v1/datasets/<DATASET_ID> with bearer token"
+  clean_outdir
+  create_token "abc"
+  create_meta_json
+  run  ./domo-cli dataset update 123456 -f meta.json -l log -v -n
+  cp run.out cmd
+  # access with bearer token
+  run  grep " -X PUT" cmd
+  run  grep " --data-binary @meta.json" cmd
+  run  grep "Content-Type: application/json" cmd
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd
+
+it "(no DATASET_ID) # => ERROR"
+  expect_error  ./domo-cli dataset update "" -f meta.json -l log -v -n
+  run  grep "DATASET_ID" run.err.0
+
+it "(no access_token) # => ERROR"
+  echo "{}" > .domo/token.out
+  expect_error  ./domo-cli dataset create -f meta.json -l log -v -n
+  run  grep "DOMO_CLIENT_ID" run.err.0
+
+it "(no access_token, but ARGs given) # => first authorize, then access"
+  echo "{}" > .domo/token.out
+  run  ./domo-cli dataset update 123456 -f meta.json --client-id foo --client-secret bar -l log -v -n
+  cp run.out cmd
+  # authorize
+  run  grep " -u 'foo:bar'" cmd
+  run  grep "https://api.domo.com/oauth/token" cmd
+  # access with bearer token
+  run  grep " -X PUT" cmd
+  run  grep " --data-binary @meta.json" cmd
+  run  grep "Content-Type: application/json" cmd
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd
 
 ######################################################################
 ### domo-cli dataset list (test by dryrun)
