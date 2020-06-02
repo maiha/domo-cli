@@ -52,6 +52,20 @@ Cmds.command "dataset" do
     end
   end
 
+  desc "delete", "123456 # DELETE https://api.domo.com/v1/datasets/{DATASET_ID}"
+  task "delete", "<DATASET_ID>" do
+    api  = task_name
+    id   = arg1?.to_s.strip
+
+    abort "arg1: Needs <DATASET_ID>" if id.empty?
+
+    valid_token? || update_token!
+    curl "-X DELETE https://api.domo.com/v1/datasets/#{id}", api: api
+    
+    if !option.dryrun
+      check_delete_dataset!(api: api)
+    end
+  end
 
   task "list" do
     api = task_name
@@ -127,6 +141,20 @@ Cmds.command "dataset" do
     else
       Pretty::File.write(option.path("ok"), "updated dataset: #{updated_id.inspect}")
       puts "OK: #{updated_id.inspect} (#{updated_name})"
+    end
+  end
+
+  private def check_delete_dataset!(api)
+    header = option.read("#{api}.header")
+
+    case header
+    when /\AHTTP[^ ]*? 204/
+      puts "OK"
+    else
+      out = option.read("#{api}.out")
+      err = option.read("#{api}.err")
+      log = (out + err).gsub(/\n\n+/m, "\n")
+      abort log
     end
   end
 

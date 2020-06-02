@@ -118,6 +118,40 @@ it "(no access_token, but ARGs given) # => first authorize, then access"
   run  grep "https://api.domo.com/v1/datasets/123456 " cmd
 
 ######################################################################
+### domo-cli dataset delete (test by dryrun)
+
+describe "domo-cli dataset delete <DATASET_ID>"
+it "DELETE https://api.domo.com/v1/datasets/<DATASET_ID> with bearer token"
+  clean_outdir
+  create_token "abc"
+  run  ./domo-cli dataset delete 123456 -n
+  cp run.out cmd
+  run  grep " -X DELETE" cmd
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd
+
+it "(no DATASET_ID) # => ERROR"
+  expect_error  ./domo-cli dataset delete "" -l log -v -n
+  run  grep "DATASET_ID" run.err.0
+
+it "(no access_token) # => ERROR"
+  echo "{}" > .domo/token.out
+  expect_error  ./domo-cli dataset delete 123456 -l log -v -n
+  run  grep "DOMO_CLIENT_ID" run.err.0
+
+it "(no access_token, but ARGs given) # => first authorize, then access"
+  echo "{}" > .domo/token.out
+  run  ./domo-cli dataset delete 123456 --client-id foo --client-secret bar -l log -v -n
+  cp run.out cmd
+  # authorize
+  run  grep " -u 'foo:bar'" cmd
+  run  grep "https://api.domo.com/oauth/token" cmd
+  # access with bearer token
+  run  grep " -X DELETE" cmd
+  run  grep "Authorization: bearer" cmd
+  run  grep "https://api.domo.com/v1/datasets/123456 " cmd
+
+######################################################################
 ### domo-cli dataset list (test by dryrun)
 
 describe "domo-cli dataset list -f <DATA_CSV>"
