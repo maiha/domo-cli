@@ -1,6 +1,7 @@
 # stdlib
 require "option_parser"
 require "json"
+require "logger"
 
 # shards
 require "var"

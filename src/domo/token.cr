@@ -1,10 +1,10 @@
 class Domo::Token
   var mtime : Time
-  
-  JSON.mapping({
-    access_token: String,
-    expires_in: Int32,
-  })
+
+  include JSON::Serializable
+
+  property access_token : String
+  property expires_in : Int32
 
   def expired_at : Time
     mtime + expires_in.seconds

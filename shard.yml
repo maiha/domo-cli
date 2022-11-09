@@ -11,6 +11,8 @@ targets:
     main: src/domo-cli.cr
 
 dependencies:
+  logger:
+    github: crystal-lang/logger.cr
   var:
     github: maiha/var.cr
   try:

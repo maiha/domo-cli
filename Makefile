@@ -8,12 +8,15 @@ all: compile
 ######################################################################
 ### compiling
 
-release: domo-cli
-compile: domo-cli-dev
+export LC_ALL=C
+export UID = $(shell id -u)
+export GID = $(shell id -g)
 
 BUILD_TARGET=
 COMPILE_FLAGS=-Dstatic
-DOCKER=docker run -t -u "`id -u`:`id -g`" -v $(PWD):/v -w /v --rm crystallang/crystal:0.33.0
+DOCKER := docker compose run crystal
+
+compile: domo-cli-dev
 
 .PHONY: build
 build:
@@ -31,6 +34,10 @@ domo-cli: build
 .PHONY: console
 console:
 	@$(DOCKER) sh
+
+.PHONY: clean
+clean:
+	rm -rf bin lib .crystal .shards tmp
 
 ######################################################################
 ### testing
