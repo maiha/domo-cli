@@ -61,7 +61,7 @@ it "(missinig DATASET_ID) # => ERROR"
 
 it "(no access_token) # => ERROR"
   echo "{}" > .domo/token.out
-  expect_error  ./domo-cli dataset import 123456 -f data.csv -l domo/log -v -n
+  expect_error  ./domo-cli dataset import 123456 -f data.csv -l log -v -n
   run  grep "DOMO_CLIENT_ID" run.err.0
 
 it "(no access_token, but ARGs given) # => first authorize, then access"
