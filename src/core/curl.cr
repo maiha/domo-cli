@@ -21,6 +21,7 @@ module Core
     seq = Shell::Seq.new
     seq.dryrun = option.dryrun
     seq.run!("mkdir -p #{dir}")
+    seq.run!("chmod 700 #{dir}")
     seq.run!("rm -f #{base}.out #{base}.err #{base}.header ok err")
     seq.run!(cmd)
     seq.run!("mv #{base}.err.tmp #{base}.err")

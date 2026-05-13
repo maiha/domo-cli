@@ -13,6 +13,7 @@ it "POST meta.json to https://api.domo.com/v1/datasets with bearer token"
   create_meta_json
   run  ./domo-cli dataset create -f meta.json -l log -v -n
   cp run.out cmd
+  run  grep "chmod 700 .domo" cmd
   # access with bearer token
   run  grep " -X POST" cmd
   run  grep " --data-binary @meta.json" cmd

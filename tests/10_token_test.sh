@@ -32,6 +32,7 @@ it "(give ENVs) # => call https://api.domo.com/oauth/token with -u foo:bar"
   export DOMO_CLIENT_SECRET=bar
   run  ./domo-cli token authorize -n -l log -v
   cp run.out cmd
+  run  grep "chmod 700 .domo" cmd
   run  grep " -u 'foo:bar'" cmd
   run  grep "https://api.domo.com/oauth/token" cmd
   run  grep "grant_type=client_credentials&scope=data" cmd
