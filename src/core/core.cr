@@ -25,7 +25,7 @@ module Core
     u1 = option.client_id?.presence     || abort "Need --client-id or env:DOMO_CLIENT_ID"
     u2 = option.client_secret?.presence || abort "Need --client-secret or env:DOMO_CLIENT_SECRET"
 
-    curl "-u '#{u1}:#{u2}' 'https://api.domo.com/oauth/token?grant_type=client_credentials&amp;scope=data'", api: "token", bearer: false
+    curl "-u '#{u1}:#{u2}' 'https://api.domo.com/oauth/token?grant_type=client_credentials&scope=data'", api: "token", bearer: false
   end
 
   private def load_token! : Domo::Token
