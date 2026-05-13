@@ -12,6 +12,15 @@ function create_token() {
 EOF
 }
 
+function create_token_with_client_id() {
+  local v=$1
+  local cid=$2
+  mkdir -p .domo
+  cat <<EOF > .domo/token.out
+{"access_token":"$v","expires_in":3600,"client_id":"$cid"}
+EOF
+}
+
 function create_meta_json() {
   cat <<'EOF' > meta.json
 {

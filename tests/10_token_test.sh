@@ -45,3 +45,29 @@ it "(give ARGs) # => call https://api.domo.com/oauth/token with -u foo:bar"
   run  grep " -u 'foo:bar'" cmd
   run  grep "https://api.domo.com/oauth/token" cmd
   run  grep "grant_type=client_credentials&scope=data" cmd
+
+######################################################################
+### cached token client_id validation
+
+describe "domo-cli (cached client_id validation)"
+it "(cached matches given client_id) # => reuse cached token, no re-authorize"
+  clean_outdir
+  create_token_with_client_id "abc" "foo"
+  run  ./domo-cli dataset list --client-id=foo --client-secret=bar -n
+  cp run.out cmd
+  expect_error  grep "oauth/token" cmd
+
+it "(cached mismatches given client_id) # => re-authorize with new credentials"
+  clean_outdir
+  create_token_with_client_id "abc" "foo"
+  run  ./domo-cli dataset list --client-id=baz --client-secret=qux -n
+  cp run.out cmd
+  run  grep "https://api.domo.com/oauth/token" cmd
+  run  grep " -u 'baz:qux'" cmd
+
+it "(cached has no client_id) # => re-authorize"
+  clean_outdir
+  create_token "abc"
+  run  ./domo-cli dataset list --client-id=foo --client-secret=bar -n
+  cp run.out cmd
+  run  grep "https://api.domo.com/oauth/token" cmd

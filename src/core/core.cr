@@ -11,6 +11,9 @@ module Core
   private def valid_token? : Domo::Token?
     token = load_token!
     raise "expired: #{token.expired_at}" if token.expired_at < Pretty.now + option.token_margin
+    if want = option.client_id?.presence
+      raise "client_id changed: #{token.client_id} -> #{want}" if token.client_id != want
+    end
     return token
   rescue err
     logger.warn "valid_token?: #{err}"
@@ -26,6 +29,12 @@ module Core
     u2 = option.client_secret?.presence || abort "Need --client-secret or env:DOMO_CLIENT_SECRET"
 
     curl "-u '#{u1}:#{u2}' 'https://api.domo.com/oauth/token?grant_type=client_credentials&scope=data'", api: "token", bearer: false
+
+    if !option.dryrun
+      data = JSON.parse(File.read(option.token_json)).as_h
+      data["client_id"] = JSON::Any.new(u1)
+      File.write(option.token_json, data.to_json)
+    end
   end
 
   private def load_token! : Domo::Token
