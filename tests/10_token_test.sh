@@ -34,6 +34,7 @@ it "(give ENVs) # => call https://api.domo.com/oauth/token with -u foo:bar"
   cp run.out cmd
   run  grep " -u 'foo:bar'" cmd
   run  grep "https://api.domo.com/oauth/token" cmd
+  run  grep "grant_type=client_credentials&scope=data" cmd
 
 it "(give ARGs) # => call https://api.domo.com/oauth/token with -u foo:bar"
   unset DOMO_CLIENT_ID
@@ -42,3 +43,4 @@ it "(give ARGs) # => call https://api.domo.com/oauth/token with -u foo:bar"
   cp run.out cmd
   run  grep " -u 'foo:bar'" cmd
   run  grep "https://api.domo.com/oauth/token" cmd
+  run  grep "grant_type=client_credentials&scope=data" cmd
